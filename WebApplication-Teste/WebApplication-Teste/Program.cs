@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication_Teste.Dao.DataAccess;
+using WebApplication_Teste.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +10,11 @@ var configuration = new ConfigurationBuilder()
     .Build();
 
 // Add services to the container.
-builder.Services.AddControllers();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<Context>(options =>
-{
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-});
+    options.UseSqlServer(connectionString));
+builder.Services.AddScoped<CompanyDAO>();
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
