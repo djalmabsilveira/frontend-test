@@ -36,6 +36,11 @@ namespace WebApplication_Teste.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCompany(Company company)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _companyDAO.AddCompanyAsync(company);
             return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, company);
         }
@@ -43,6 +48,16 @@ namespace WebApplication_Teste.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompany(int id, Company company)
         {
+            if (id != company.Id)
+            {
+                return BadRequest("O ID da empresa na URL não corresponde ao ID da empresa no corpo da solicitação.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); 
+            }
+
             var updated = await _companyDAO.UpdateCompanyAsync(id, company);
             if (!updated)
             {
