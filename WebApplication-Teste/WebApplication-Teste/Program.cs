@@ -1,8 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using WebApplication_Teste.Dao.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
 
+// Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddDbContext<Context>(options =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
